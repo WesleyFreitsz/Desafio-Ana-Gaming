@@ -4,69 +4,32 @@
 const API_KEY = '46981b82950f987cb95f8610b590cf56';
 const BASE_URL = 'https://api.the-odds-api.com/v4';
 
-// Tipos básicos
-interface Sport {
-  key: string;
-  group: string;
-  title: string;
-  active: boolean;
-  has_outrights: boolean;
-}
-
-interface Score {
-  home: number;
-  away: number;
-}
-
-interface Outcome {
-  name: string;
-  price: number;
-}
-
-interface Market {
-  key: string;
-  outcomes: Outcome[];
-}
-
-interface Bookmaker {
-  key: string;
-  markets: Market[];
-}
-
-interface Game {
-  id: string;
-  sport_key: string;
-  sport_title: string;
-  commence_time: string;
-  home_team: string;
-  away_team: string;
-  scores?: Score;
-  bookmakers?: Bookmaker[];
-}
+// Importando tipos do projeto para garantir compatibilidade
+import { Sport, Event, EventDetails, Bookmaker, Market, Outcome } from '@/types/sports';
 
 // Dados de fallback simplificados
 const FALLBACK = {
   sports: [
-    { key: 'soccer_epl', group: 'soccer', title: 'Premier League', active: true, has_outrights: true },
-    { key: 'soccer_brazil_campeonato', group: 'soccer', title: 'Campeonato Brasileiro', active: true, has_outrights: true },
-    { key: 'basketball_nba', group: 'basketball', title: 'NBA', active: true, has_outrights: true },
-    { key: 'tennis_atp', group: 'tennis', title: 'ATP Tour', active: true, has_outrights: true }
+    { key: 'soccer_epl', group: 'soccer', title: 'Premier League', description: 'Campeonato Inglês de Futebol', active: true, has_outrights: true },
+    { key: 'soccer_brazil_campeonato', group: 'soccer', title: 'Campeonato Brasileiro', description: 'Campeonato Brasileiro Série A', active: true, has_outrights: true },
+    { key: 'basketball_nba', group: 'basketball', title: 'NBA', description: 'National Basketball Association', active: true, has_outrights: true },
+    { key: 'tennis_atp', group: 'tennis', title: 'ATP Tour', description: 'Association of Tennis Professionals', active: true, has_outrights: true }
   ] as Sport[],
   
   recentGames: {
     soccer_epl: [
       { id: 'soccer_epl_1', home_team: 'Manchester City', away_team: 'Liverpool', sport_key: 'soccer_epl', sport_title: 'Premier League', commence_time: '2025-05-20T19:00:00Z', scores: { home: 2, away: 1 } },
       { id: 'soccer_epl_2', home_team: 'Arsenal', away_team: 'Chelsea', sport_key: 'soccer_epl', sport_title: 'Premier League', commence_time: '2025-05-19T19:00:00Z', scores: { home: 3, away: 0 } }
-    ] as Game[],
+    ] as EventDetails[],
     soccer_brazil_campeonato: [
       { id: 'soccer_brazil_1', home_team: 'Flamengo', away_team: 'Palmeiras', sport_key: 'soccer_brazil_campeonato', sport_title: 'Campeonato Brasileiro', commence_time: '2025-05-20T19:00:00Z', scores: { home: 2, away: 1 } }
-    ] as Game[],
+    ] as EventDetails[],
     basketball_nba: [
       { id: 'basketball_nba_1', home_team: 'Lakers', away_team: 'Celtics', sport_key: 'basketball_nba', sport_title: 'NBA', commence_time: '2025-05-21T23:30:00Z', scores: { home: 105, away: 98 } }
-    ] as Game[],
+    ] as EventDetails[],
     tennis_atp: [
       { id: 'tennis_atp_1', home_team: 'Nadal', away_team: 'Djokovic', sport_key: 'tennis_atp', sport_title: 'ATP Tour', commence_time: '2025-05-22T14:00:00Z', scores: { home: 3, away: 2 } }
-    ] as Game[]
+    ] as EventDetails[]
   },
   
   upcomingGames: {
@@ -80,7 +43,9 @@ const FALLBACK = {
         commence_time: '2025-05-25T19:00:00Z', 
         bookmakers: [
           { 
-            key: 'betfair', 
+            key: 'betfair',
+            title: 'Betfair',
+            last_update: '2025-05-22T12:00:00Z',
             markets: [
               { 
                 key: 'h2h', 
@@ -94,7 +59,7 @@ const FALLBACK = {
           }
         ] 
       }
-    ] as Game[],
+    ] as Event[],
     soccer_brazil_campeonato: [
       { 
         id: 'soccer_brazil_3', 
@@ -105,7 +70,9 @@ const FALLBACK = {
         commence_time: '2025-05-25T19:00:00Z', 
         bookmakers: [
           { 
-            key: 'betfair', 
+            key: 'betfair',
+            title: 'Betfair',
+            last_update: '2025-05-22T12:00:00Z',
             markets: [
               { 
                 key: 'h2h', 
@@ -119,7 +86,7 @@ const FALLBACK = {
           }
         ] 
       }
-    ] as Game[],
+    ] as Event[],
     basketball_nba: [
       { 
         id: 'basketball_nba_3', 
@@ -130,7 +97,9 @@ const FALLBACK = {
         commence_time: '2025-05-25T23:30:00Z', 
         bookmakers: [
           { 
-            key: 'betfair', 
+            key: 'betfair',
+            title: 'Betfair',
+            last_update: '2025-05-22T12:00:00Z',
             markets: [
               { 
                 key: 'h2h', 
@@ -143,7 +112,7 @@ const FALLBACK = {
           }
         ] 
       }
-    ] as Game[],
+    ] as Event[],
     tennis_atp: [
       { 
         id: 'tennis_atp_3', 
@@ -154,7 +123,9 @@ const FALLBACK = {
         commence_time: '2025-05-27T14:00:00Z', 
         bookmakers: [
           { 
-            key: 'betfair', 
+            key: 'betfair',
+            title: 'Betfair',
+            last_update: '2025-05-22T12:00:00Z',
             markets: [
               { 
                 key: 'h2h', 
@@ -167,7 +138,7 @@ const FALLBACK = {
           }
         ] 
       }
-    ] as Game[]
+    ] as Event[]
   }
 };
 
@@ -189,7 +160,13 @@ export async function getSports(): Promise<Sport[]> {
       throw new Error(`Erro ao buscar esportes: ${response.status}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    
+    // Adiciona descrição aos dados da API, já que a API não fornece esse campo
+    return data.map((sport: any) => ({
+      ...sport,
+      description: getDefaultDescription(sport.group, sport.title)
+    }));
   } catch (error) {
     console.error('Erro ao buscar esportes:', error);
     return FALLBACK.sports;
@@ -199,7 +176,7 @@ export async function getSports(): Promise<Sport[]> {
 /**
  * Obtém odds para um esporte específico
  */
-export async function getOdds(sportKey: string, regions: string = 'us', markets: string = 'h2h'): Promise<Game[]> {
+export async function getOdds(sportKey: string, regions: string = 'us', markets: string = 'h2h'): Promise<Event[]> {
   try {
     if (isBuildTime) {
       return FALLBACK.upcomingGames[sportKey as keyof typeof FALLBACK.upcomingGames] || [];
@@ -222,7 +199,7 @@ export async function getOdds(sportKey: string, regions: string = 'us', markets:
 /**
  * Obtém eventos para um esporte específico
  */
-export async function getEvents(sportKey: string): Promise<Game[]> {
+export async function getEvents(sportKey: string): Promise<EventDetails[]> {
   try {
     if (isBuildTime) {
       return FALLBACK.recentGames[sportKey as keyof typeof FALLBACK.recentGames] || [];
@@ -245,7 +222,7 @@ export async function getEvents(sportKey: string): Promise<Game[]> {
 /**
  * Obtém os últimos jogos para um esporte específico
  */
-export async function getRecentGames(sportKey: string, limit: number = 3): Promise<Game[]> {
+export async function getRecentGames(sportKey: string, limit: number = 3): Promise<EventDetails[]> {
   try {
     if (isBuildTime) {
       const fallbackGames = FALLBACK.recentGames[sportKey as keyof typeof FALLBACK.recentGames] || [];
@@ -271,7 +248,7 @@ export async function getRecentGames(sportKey: string, limit: number = 3): Promi
 /**
  * Obtém os próximos jogos para um esporte específico
  */
-export async function getUpcomingGames(sportKey: string, limit: number = 3): Promise<Game[]> {
+export async function getUpcomingGames(sportKey: string, limit: number = 3): Promise<Event[]> {
   try {
     if (isBuildTime) {
       const fallbackGames = FALLBACK.upcomingGames[sportKey as keyof typeof FALLBACK.upcomingGames] || [];
@@ -355,7 +332,7 @@ export function formatDate(dateString: string): string {
 /**
  * Obtém detalhes de um evento específico pelo ID
  */
-export async function getEventById(eventId: string): Promise<Game> {
+export async function getEventById(eventId: string): Promise<Event | EventDetails> {
   try {
     if (isBuildTime) {
       // Busca em jogos recentes
@@ -381,7 +358,9 @@ export async function getEventById(eventId: string): Promise<Game> {
         sport_title: 'Premier League',
         commence_time: '2025-05-25T19:00:00Z',
         bookmakers: [{ 
-          key: 'betfair', 
+          key: 'betfair',
+          title: 'Betfair',
+          last_update: '2025-05-22T12:00:00Z',
           markets: [{ 
             key: 'h2h', 
             outcomes: [
@@ -426,7 +405,9 @@ export async function getEventById(eventId: string): Promise<Game> {
       sport_title: 'Premier League',
       commence_time: '2025-05-25T19:00:00Z',
       bookmakers: [{ 
-        key: 'betfair', 
+        key: 'betfair',
+        title: 'Betfair',
+        last_update: '2025-05-22T12:00:00Z',
         markets: [{ 
           key: 'h2h', 
           outcomes: [
@@ -438,4 +419,20 @@ export async function getEventById(eventId: string): Promise<Game> {
       }]
     };
   }
+}
+
+/**
+ * Gera uma descrição padrão para esportes quando não fornecida pela API
+ */
+function getDefaultDescription(group: string, title: string): string {
+  const descriptions: Record<string, string> = {
+    'soccer': 'Campeonato de Futebol',
+    'basketball': 'Campeonato de Basquete',
+    'tennis': 'Torneio de Tênis',
+    'baseball': 'Campeonato de Beisebol',
+    'hockey': 'Campeonato de Hóquei',
+    'football': 'Campeonato de Futebol Americano'
+  };
+  
+  return `${descriptions[group] || 'Competição'}: ${title}`;
 }
