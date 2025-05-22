@@ -12,6 +12,22 @@ interface League {
   has_outrights: boolean;
 }
 
+interface Outcome {
+  name: string;
+  price: number;
+}
+
+interface Market {
+  key: string;
+  outcomes: Outcome[];
+}
+
+interface Bookmaker {
+  key: string;
+  title: string;
+  markets: Market[];
+}
+
 interface Game {
   id: string;
   home_team: string;
@@ -19,7 +35,7 @@ interface Game {
   sport_key?: string;
   sport_title?: string;
   commence_time: string;
-  bookmakers?: any[];
+  bookmakers?: Bookmaker[];
   scores?: {
     home: number;
     away: number;
@@ -124,7 +140,7 @@ export default function SportPage({ params }: SportPageProps) {
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {leagues.slice(0, 6).map((league) => (
+        {leagues.slice(0, 6).map((league: League) => (
           <div key={league.key} className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
             <h3 className="text-xl font-semibold mb-2">{league.title}</h3>
             <p className="text-gray-600 mb-4">{league.description || `Liga de ${sportName}`}</p>
@@ -174,7 +190,7 @@ export default function SportPage({ params }: SportPageProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {recentGames.map((game) => (
+            {recentGames.map((game: Game) => (
               <tr key={game.id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {formatDate(game.commence_time)}
@@ -233,13 +249,13 @@ export default function SportPage({ params }: SportPageProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {upcomingGames.map((game) => {
+            {upcomingGames.map((game: Game) => {
               // Extrair odds para exibição
               let oddsDisplay = 'N/A';
               if (game.bookmakers && game.bookmakers.length > 0) {
                 const bookmaker = game.bookmakers[0];
                 if (bookmaker.markets && bookmaker.markets.length > 0) {
-                  const market = bookmaker.markets.find((m: any) => m.key === 'h2h') || bookmaker.markets[0];
+                  const market = bookmaker.markets.find((m: Market) => m.key === 'h2h') || bookmaker.markets[0];
                   if (market && market.outcomes) {
                     const outcomes = market.outcomes;
                     if (outcomes.length === 2) { // Sem empate (ex: tênis, basquete)
