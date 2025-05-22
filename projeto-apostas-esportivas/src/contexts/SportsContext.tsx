@@ -39,7 +39,7 @@ export function SportsProvider({ children }: { children: ReactNode }) {
     loadSports();
   }, []);
 
-  async function fetchEventsBySort(sportKey: string) {
+  async function fetchEventsBySport(sportKey: string) {
     try {
       setLoading(true);
       const data = await getOdds(sportKey);
