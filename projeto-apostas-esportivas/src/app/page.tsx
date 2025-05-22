@@ -1,122 +1,253 @@
-// src/app/sports/page.tsx
-// Página de Esportes - Lista de esportes disponíveis
+// src/app/sports/[sport]/page.tsx
+// Página de Ligas por Esporte
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { getSports } from '@/lib/api';
+import { 
+  getLeaguesBySport, 
+  getRecentGames, 
+  getUpcomingGames, 
+  getSportKeyByName,
+  formatDate
+} from '@/lib/api';
 
+interface SportPageProps {
+  params: {
+    sport: string;
+  };
+}
 
+// Componente para exibir as ligas de um esporte
+async function LeaguesList({ sport }: { sport: string }) {
+  // Buscar ligas do esporte
+  const leagues = await getLeaguesBySport(sport);
   
-  // Agrupar esportes por categoria
-  const groupedSports = sports.reduce((acc: any, sport: any) => {
-    const group = sport.group;
-    if (!acc[group]) {
-      acc[group] = [];
-    }
-    acc[group].push(sport);
-    return acc;
-  }, {});
-
-  // Cores para diferentes categorias de esportes
-  const colorMap: Record<string, { bg: string, text: string, hover: string }> = {
-    'soccer': { bg: 'bg-blue-100', text: 'text-blue-600', hover: 'hover:text-blue-800' },
-    'basketball': { bg: 'bg-orange-100', text: 'text-orange-600', hover: 'hover:text-orange-800' },
-    'tennis': { bg: 'bg-green-100', text: 'text-green-600', hover: 'hover:text-green-800' },
-    'baseball': { bg: 'bg-red-100', text: 'text-red-600', hover: 'hover:text-red-800' },
-    'hockey': { bg: 'bg-purple-100', text: 'text-purple-600', hover: 'hover:text-purple-800' },
-    'football': { bg: 'bg-yellow-100', text: 'text-yellow-700', hover: 'hover:text-yellow-900' },
-    'default': { bg: 'bg-gray-100', text: 'text-gray-600', hover: 'hover:text-gray-800' }
-  };
-
-  // Ícones para diferentes categorias de esportes (SVG paths)
-  const iconMap: Record<string, string> = {
-    'soccer': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-3.5l6-4.5-6-4.5v9z',
-    'basketball': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z',
-    'tennis': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c.83 0 1.5-.67 1.5-1.5S7.83 8 7 8s-1.5.67-1.5 1.5S6.17 11 7 11zm8-1.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5.67 1.5 1.5 1.5 1.5-.67 1.5-1.5z',
-    'default': 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-  };
+  if (leagues.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6">
+        <p className="text-gray-500">Nenhuma liga disponível para este esporte no momento.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {Object.entries(groupedSports).map(([group, sportsList]: [string, any]) => (
-        <div key={group} className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
-          <div className="flex items-center mb-4">
-            <div className={`${colorMap[group]?.bg || colorMap.default.bg} p-3 rounded-full`}>
-              <svg 
-                className={`h-6 w-6 ${colorMap[group]?.text || colorMap.default.text}`} 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d={iconMap[group] || iconMap.default} 
-                />
-              </svg>
-            </div>
-            <h2 className="ml-4 text-xl font-semibold capitalize">{group}</h2>
+      {leagues.slice(0, 6).map((league: any) => (
+        <div key={league.key} className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+          <h3 className="text-xl font-semibold mb-2">{league.title}</h3>
+          <p className="text-gray-600 mb-4">{league.description || `Liga de ${getSportName(sport)}`}</p>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-500">{league.has_outrights ? 'Inclui apostas futuras' : 'Apenas jogos'}</span>
+            <Link href={`/match/${league.key}`} className="text-blue-600 hover:text-blue-800">
+              Ver jogos →
+            </Link>
           </div>
-          <p className="text-gray-600 mb-4">
-            {sportsList.length} {sportsList.length === 1 ? 'liga disponível' : 'ligas disponíveis'}
-          </p>
-          <Link 
-            href={`/sports/${group}`} 
-            className={`${colorMap[group]?.text || colorMap.default.text} font-medium ${colorMap[group]?.hover || colorMap.default.hover}`}
-          >
-            Ver ligas →
-          </Link>
         </div>
       ))}
     </div>
   );
 }
 
-export default function SportsPage() {
+// Componente para exibir os jogos recentes de um esporte
+async function RecentGames({ sportKey }: { sportKey: string }) {
+  // Buscar jogos recentes
+  const games = await getRecentGames(sportKey, 3);
+  
+  if (games.length === 0) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-gray-500">Nenhum jogo recente disponível para este esporte.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partida</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resultado</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Liga</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {games.map((game: any) => (
+            <tr key={game.id}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {formatDate(game.commence_time)}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                {game.home_team} vs {game.away_team}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {game.scores ? `${game.scores.home} - ${game.scores.away}` : 'N/A'}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {game.sport_title || 'Liga Principal'}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
+                <Link href={`/match/${game.id}`}>Ver detalhes</Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// Componente para exibir os próximos jogos de um esporte
+async function UpcomingGames({ sportKey }: { sportKey: string }) {
+  // Buscar próximos jogos
+  const games = await getUpcomingGames(sportKey, 3);
+  
+  if (games.length === 0) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-gray-500">Nenhum jogo futuro disponível para este esporte.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partida</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Liga</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Odds (Casa-Empate-Fora)</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {games.map((game: any) => {
+            // Extrair odds para exibição
+            let oddsDisplay = 'N/A';
+            if (game.bookmakers && game.bookmakers.length > 0) {
+              const bookmaker = game.bookmakers[0];
+              if (bookmaker.markets && bookmaker.markets.length > 0) {
+                const market = bookmaker.markets.find((m: any) => m.key === 'h2h') || bookmaker.markets[0];
+                if (market && market.outcomes) {
+                  const outcomes = market.outcomes;
+                  if (outcomes.length === 2) { // Sem empate (ex: tênis, basquete)
+                    oddsDisplay = `${outcomes[0].price.toFixed(2)} - ${outcomes[1].price.toFixed(2)}`;
+                  } else if (outcomes.length === 3) { // Com empate (ex: futebol)
+                    oddsDisplay = `${outcomes[0].price.toFixed(2)} - ${outcomes[1].price.toFixed(2)} - ${outcomes[2].price.toFixed(2)}`;
+                  }
+                }
+              }
+            }
+            
+            return (
+              <tr key={game.id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {formatDate(game.commence_time)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  {game.home_team} vs {game.away_team}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {game.sport_title || 'Liga Principal'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {oddsDisplay}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
+                  <Link href={`/match/${game.id}`}>Ver detalhes</Link>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default function SportPage({ params }: SportPageProps) {
+  const { sport } = params;
+  const sportName = getSportName(sport);
+  const sportKey = getSportKeyByName(sport) || 'soccer_epl'; // Fallback para futebol se não encontrar
+
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Esportes Disponíveis</h1>
-      
-      <div className="mb-6">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Buscar esporte..."
-            className="w-full p-3 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <svg
-            className="absolute left-3 top-3.5 h-5 w-5 text-gray-400"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </div>
+      <div className="flex items-center mb-6">
+        <Link href="/sports" className="text-blue-600 hover:text-blue-800 mr-2">
+          ← Voltar para Esportes
+        </Link>
+        <h1 className="text-3xl font-bold">{sportName}</h1>
       </div>
-      
-      <Suspense fallback={
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white rounded-lg shadow p-6 animate-pulse">
-              <div className="flex items-center mb-4">
-                <div className="bg-gray-200 p-3 rounded-full h-12 w-12"></div>
-                <div className="ml-4 h-5 bg-gray-200 rounded w-1/2"></div>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Ligas Disponíveis</h2>
+        <Suspense fallback={
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white rounded-lg shadow p-6 animate-pulse">
+                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                <div className="flex justify-between items-center">
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                </div>
               </div>
-              <div className="h-4 bg-gray-200 rounded mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+            ))}
+          </div>
+        }>
+          <LeaguesList sport={sport} />
+        </Suspense>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Jogos Recentes</h2>
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <Suspense fallback={
+            <div className="p-4 animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-full mb-4"></div>
+              <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
+              <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
+              <div className="h-6 bg-gray-200 rounded w-full"></div>
             </div>
-          ))}
+          }>
+            <RecentGames sportKey={sportKey} />
+          </Suspense>
         </div>
-      }>
-        <SportsList />
-      </Suspense>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Próximos Jogos</h2>
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <Suspense fallback={
+            <div className="p-4 animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-full mb-4"></div>
+              <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
+              <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
+              <div className="h-6 bg-gray-200 rounded w-full"></div>
+            </div>
+          }>
+            <UpcomingGames sportKey={sportKey} />
+          </Suspense>
+        </div>
+      </section>
     </main>
   );
+}
+
+// Função auxiliar para obter o nome do esporte a partir da chave
+function getSportName(sportKey: string): string {
+  const sportNames: Record<string, string> = {
+    'soccer': 'Futebol',
+    'basketball': 'Basquete',
+    'tennis': 'Tênis',
+    'americanfootball': 'Futebol Americano',
+    'baseball': 'Beisebol',
+    'hockey': 'Hóquei',
+    // Adicione mais esportes conforme necessário
+  };
+  
+  return sportNames[sportKey] || sportKey.charAt(0).toUpperCase() + sportKey.slice(1);
 }
