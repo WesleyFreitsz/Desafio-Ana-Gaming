@@ -23,18 +23,12 @@ export default function Header() {
             <Link href="/sports" className="hover:text-blue-200 transition">
               Esportes
             </Link>
-            <Link href="#" className="hover:text-blue-200 transition">
-              Favoritos
-            </Link>
-            <Link href="#" className="hover:text-blue-200 transition">
-              Sobre
-            </Link>
           </nav>
 
           {/* Botão de login para desktop */}
           <div className="hidden md:block">
             <Link 
-              href="#" 
+              href="/auth/signin" 
               className="bg-white text-blue-700 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition"
             >
               Login
