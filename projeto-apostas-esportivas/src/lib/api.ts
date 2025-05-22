@@ -385,7 +385,7 @@ export async function getEventById(eventId: string): Promise<Event | EventDetail
             ...event,
             sport: sport.title,
             group: sport.group
-          };
+          } as EventDetails;;
         }
       } catch (error) {
         console.error(`Erro ao buscar odds para ${sport.key}:`, error);
