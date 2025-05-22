@@ -20,11 +20,27 @@ interface Game {
   sport_key?: string;
   sport_title?: string;
   commence_time: string;
-  bookmakers?: any[];
+  bookmakers?: Bookmaker[];
   scores?: {
     home: number;
     away: number;
   };
+}
+
+interface Bookmaker {
+  key: string;
+  title: string;
+  markets: Market[];
+}
+
+interface Market {
+  key: string;
+  outcomes: Outcome[];
+}
+
+interface Outcome {
+  name: string;
+  price: number;
 }
 
 export default function Home() {
@@ -92,22 +108,22 @@ export default function Home() {
         
         // Filtrar jogos com odds para melhores odds
         const gamesWithOdds = allUpcomingGames
-          .filter(game => game.bookmakers && game.bookmakers.length > 0)
-          .sort((a, b) => {
+          .filter((game: Game) => game.bookmakers && game.bookmakers.length > 0)
+          .sort((a: Game, b: Game) => {
             // Ordenar por jogos com odds mais equilibradas
-            const aBookmaker = a.bookmakers[0];
-            const bBookmaker = b.bookmakers[0];
+            const aBookmaker = a.bookmakers?.[0];
+            const bBookmaker = b.bookmakers?.[0];
             
             if (!aBookmaker || !bBookmaker) return 0;
             
-            const aMarket = aBookmaker.markets.find(m => m.key === 'h2h') || aBookmaker.markets[0];
-            const bMarket = bBookmaker.markets.find(m => m.key === 'h2h') || bBookmaker.markets[0];
+            const aMarket = aBookmaker.markets.find((m: Market) => m.key === 'h2h') || aBookmaker.markets[0];
+            const bMarket = bBookmaker.markets.find((m: Market) => m.key === 'h2h') || bBookmaker.markets[0];
             
             if (!aMarket || !bMarket) return 0;
             
             // Calcular a diferença entre as odds mais alta e mais baixa
-            const aOdds = aMarket.outcomes.map(o => o.price);
-            const bOdds = bMarket.outcomes.map(o => o.price);
+            const aOdds = aMarket.outcomes.map((o: Outcome) => o.price);
+            const bOdds = bMarket.outcomes.map((o: Outcome) => o.price);
             
             const aDiff = Math.max(...aOdds) - Math.min(...aOdds);
             const bDiff = Math.max(...bOdds) - Math.min(...bOdds);
@@ -159,7 +175,7 @@ export default function Home() {
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {mainSports.map((sport) => (
+        {mainSports.map((sport: Sport) => (
           <div key={sport.key} className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition">
             <h3 className="text-xl font-medium">{sport.name}</h3>
             <p className="text-gray-600 mt-2">{sport.description}</p>
@@ -193,7 +209,7 @@ export default function Home() {
 
     return (
       <div className="space-y-4">
-        {recentGames.map((game) => (
+        {recentGames.map((game: Game) => (
           <div key={game.id} className="border-b pb-4 last:border-0 last:pb-0">
             <div className="flex justify-between items-center">
               <div>
@@ -234,7 +250,7 @@ export default function Home() {
 
     return (
       <div className="space-y-4">
-        {upcomingGames.map((game) => (
+        {upcomingGames.map((game: Game) => (
           <div key={game.id} className="border-b pb-4 last:border-0 last:pb-0">
             <div className="flex justify-between items-center">
               <div>
@@ -278,15 +294,15 @@ export default function Home() {
 
     return (
       <div className="space-y-4">
-        {bestOdds.map((game) => {
+        {bestOdds.map((game: Game) => {
           // Extrair odds para exibição
           let oddsDisplay = '';
           if (game.bookmakers && game.bookmakers.length > 0) {
             const bookmaker = game.bookmakers[0];
             if (bookmaker.markets && bookmaker.markets.length > 0) {
-              const market = bookmaker.markets.find(m => m.key === 'h2h') || bookmaker.markets[0];
+              const market = bookmaker.markets.find((m: Market) => m.key === 'h2h') || bookmaker.markets[0];
               if (market && market.outcomes) {
-                oddsDisplay = market.outcomes.map(o => `${o.name}: ${o.price.toFixed(2)}`).join(' | ');
+                oddsDisplay = market.outcomes.map((o: Outcome) => `${o.name}: ${o.price.toFixed(2)}`).join(' | ');
               }
             }
           }
