@@ -61,7 +61,7 @@ export function SportsProvider({ children }: { children: ReactNode }) {
         selectedSport,
         events,
         setSelectedSport,
-        fetchEventsBySort: fetchEventsBySort,
+        fetchEventsBySport: fetchEventsBySport,
       }}
     >
       {children}
