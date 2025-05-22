@@ -4,10 +4,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { getSports } from '@/lib/api';
 
-// Componente para buscar e exibir esportes
-async function SportsList() {
-  // Buscar esportes da API
-  const sports = await getSports();
+
   
   // Agrupar esportes por categoria
   const groupedSports = sports.reduce((acc: any, sport: any) => {
