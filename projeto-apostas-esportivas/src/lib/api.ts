@@ -35,20 +35,192 @@ const FALLBACK_DATA = {
   },
   upcomingGames: {
     soccer_epl: [
-      { id: 'soccer_epl_3', home_team: 'Manchester United', away_team: 'Tottenham', sport_key: 'soccer_epl', sport_title: 'Premier League', commence_time: '2025-05-25T19:00:00Z', bookmakers: [{ key: 'betfair', markets: [{ key: 'h2h', outcomes: [{ name: 'Manchester United', price: 1.85 }, { name: 'Draw', price: 3.5 }, { name: 'Tottenham', price: 4.2 }] }] }] },
-      { id: 'soccer_epl_4', home_team: 'Newcastle', away_team: 'Everton', sport_key: 'soccer_epl', sport_title: 'Premier League', commence_time: '2025-05-26T19:00:00Z', bookmakers: [{ key: 'betfair', markets: [{ key: 'h2h', outcomes: [{ name: 'Newcastle', price: 1.7 }, { name: 'Draw', price: 3.8 }, { name: 'Everton', price: 4.5 }] }] }] }
+      { 
+        id: 'soccer_epl_3', 
+        home_team: 'Manchester United', 
+        away_team: 'Tottenham', 
+        sport_key: 'soccer_epl', 
+        sport_title: 'Premier League', 
+        commence_time: '2025-05-25T19:00:00Z', 
+        bookmakers: [
+          { 
+            key: 'betfair', 
+            markets: [
+              { 
+                key: 'h2h', 
+                outcomes: [
+                  { name: 'Manchester United', price: 1.85 }, 
+                  { name: 'Draw', price: 3.5 }, 
+                  { name: 'Tottenham', price: 4.2 }
+                ] 
+              }
+            ] 
+          }
+        ] 
+      },
+      { 
+        id: 'soccer_epl_4', 
+        home_team: 'Newcastle', 
+        away_team: 'Everton', 
+        sport_key: 'soccer_epl', 
+        sport_title: 'Premier League', 
+        commence_time: '2025-05-26T19:00:00Z', 
+        bookmakers: [
+          { 
+            key: 'betfair', 
+            markets: [
+              { 
+                key: 'h2h', 
+                outcomes: [
+                  { name: 'Newcastle', price: 1.7 }, 
+                  { name: 'Draw', price: 3.8 }, 
+                  { name: 'Everton', price: 4.5 }
+                ] 
+              }
+            ] 
+          }
+        ] 
+      }
     ],
     soccer_brazil_campeonato: [
-      { id: 'soccer_brazil_3', home_team: 'Fluminense', away_team: 'Botafogo', sport_key: 'soccer_brazil_campeonato', sport_title: 'Campeonato Brasileiro', commence_time: '2025-05-25T19:00:00Z', bookmakers: [{ key: 'betfair', markets: [{ key: 'h2h', outcomes: [{ name: 'Fluminense', price: 2.1 }, { name: 'Draw', price: 3.2 }, { name: 'Botafogo', price: 3.5 }] }] }] },
-      { id: 'soccer_brazil_4', home_team: 'Grêmio', away_team: 'Internacional', sport_key: 'soccer_brazil_campeonato', sport_title: 'Campeonato Brasileiro', commence_time: '2025-05-26T19:00:00Z', bookmakers: [{ key: 'betfair', markets: [{ key: 'h2h', outcomes: [{ name: 'Grêmio', price: 2.4 }, { name: 'Draw', price: 3.1 }, { name: 'Internacional', price: 2.9 }] }] }] }
+      { 
+        id: 'soccer_brazil_3', 
+        home_team: 'Fluminense', 
+        away_team: 'Botafogo', 
+        sport_key: 'soccer_brazil_campeonato', 
+        sport_title: 'Campeonato Brasileiro', 
+        commence_time: '2025-05-25T19:00:00Z', 
+        bookmakers: [
+          { 
+            key: 'betfair', 
+            markets: [
+              { 
+                key: 'h2h', 
+                outcomes: [
+                  { name: 'Fluminense', price: 2.1 }, 
+                  { name: 'Draw', price: 3.2 }, 
+                  { name: 'Botafogo', price: 3.5 }
+                ] 
+              }
+            ] 
+          }
+        ] 
+      },
+      { 
+        id: 'soccer_brazil_4', 
+        home_team: 'Grêmio', 
+        away_team: 'Internacional', 
+        sport_key: 'soccer_brazil_campeonato', 
+        sport_title: 'Campeonato Brasileiro', 
+        commence_time: '2025-05-26T19:00:00Z', 
+        bookmakers: [
+          { 
+            key: 'betfair', 
+            markets: [
+              { 
+                key: 'h2h', 
+                outcomes: [
+                  { name: 'Grêmio', price: 2.4 }, 
+                  { name: 'Draw', price: 3.1 }, 
+                  { name: 'Internacional', price: 2.9 }
+                ] 
+              }
+            ] 
+          }
+        ] 
+      }
     ],
     basketball_nba: [
-      { id: 'basketball_nba_3', home_team: 'Nets', away_team: 'Heat', sport_key: 'basketball_nba', sport_title: 'NBA', commence_time: '2025-05-25T23:30:00Z', bookmakers: [{ key: 'betfair', markets: [{ key: 'h2h', outcomes: [{ name: 'Nets', price: 1.65 }, { name: 'Heat', price: 2.25 }] }] }] },
-      { id: 'basketball_nba_4', home_team: 'Suns', away_team: 'Clippers', sport_key: 'basketball_nba', sport_title: 'NBA', commence_time: '2025-05-26T23:30:00Z', bookmakers: [{ key: 'betfair', markets: [{ key: 'h2h', outcomes: [{ name: 'Suns', price: 1.55 }, { name: 'Clippers', price: 2.45 }] }] }] }
+      { 
+        id: 'basketball_nba_3', 
+        home_team: 'Nets', 
+        away_team: 'Heat', 
+        sport_key: 'basketball_nba', 
+        sport_title: 'NBA', 
+        commence_time: '2025-05-25T23:30:00Z', 
+        bookmakers: [
+          { 
+            key: 'betfair', 
+            markets: [
+              { 
+                key: 'h2h', 
+                outcomes: [
+                  { name: 'Nets', price: 1.65 }, 
+                  { name: 'Heat', price: 2.25 }
+                ] 
+              }
+            ] 
+          }
+        ] 
+      },
+      { 
+        id: 'basketball_nba_4', 
+        home_team: 'Suns', 
+        away_team: 'Clippers', 
+        sport_key: 'basketball_nba', 
+        sport_title: 'NBA', 
+        commence_time: '2025-05-26T23:30:00Z', 
+        bookmakers: [
+          { 
+            key: 'betfair', 
+            markets: [
+              { 
+                key: 'h2h', 
+                outcomes: [
+                  { name: 'Suns', price: 1.55 }, 
+                  { name: 'Clippers', price: 2.45 }
+                ] 
+              }
+            ] 
+          }
+        ] 
+      }
     ],
     tennis_atp: [
-      { id: 'tennis_atp_3', home_team: 'Alcaraz', away_team: 'Medvedev', sport_key: 'tennis_atp', sport_title: 'ATP Tour', commence_time: '2025-05-27T14:00:00Z', bookmakers: [{ key: 'betfair', markets: [{ key: 'h2h', outcomes: [{ name: 'Alcaraz', price: 1.45 }, { name: 'Medvedev', price: 2.75 }] }] }] },
-      { id: 'tennis_atp_4', home_team: 'Tsitsipas', away_team: 'Zverev', sport_key: 'tennis_atp', sport_title: 'ATP Tour', commence_time: '2025-05-28T12:00:00Z', bookmakers: [{ key: 'betfair', markets: [{ key: 'h2h', outcomes: [{ name: 'Tsitsipas', price: 1.85 }, { name: 'Zverev', price: 1.95 }] }] }] }
+      { 
+        id: 'tennis_atp_3', 
+        home_team: 'Alcaraz', 
+        away_team: 'Medvedev', 
+        sport_key: 'tennis_atp', 
+        sport_title: 'ATP Tour', 
+        commence_time: '2025-05-27T14:00:00Z', 
+        bookmakers: [
+          { 
+            key: 'betfair', 
+            markets: [
+              { 
+                key: 'h2h', 
+                outcomes: [
+                  { name: 'Alcaraz', price: 1.45 }, 
+                  { name: 'Medvedev', price: 2.75 }
+                ] 
+              }
+            ] 
+          }
+        ] 
+      },
+      { 
+        id: 'tennis_atp_4', 
+        home_team: 'Tsitsipas', 
+        away_team: 'Zverev', 
+        sport_key: 'tennis_atp', 
+        sport_title: 'ATP Tour', 
+        commence_time: '2025-05-28T12:00:00Z', 
+        bookmakers: [
+          { 
+            key: 'betfair', 
+            markets: [
+              { 
+                key: 'h2h', 
+                outcomes: [
+                  { name: 'Tsitsipas', price: 1.85 }, 
+                  { name: 'Zverev', price: 1.95 }
+                ] 
+              }
+            ] 
+          }
+        ] 
+      }
     ]
   }
 };
@@ -281,75 +453,5 @@ export async function getEventById(eventId: string) {
       console.log(`Ambiente de build detectado, buscando evento ${eventId} nos dados de fallback`);
       
       // Busca em jogos recentes
-      for (const sportKey in FALLBACK_DATA.recentGames) {
-        const games = FALLBACK_DATA.recentGames[sportKey as keyof typeof FALLBACK_DATA.recentGames];
-        const event = games.find((e: any) => e.id === eventId);
-        if (event) return event;
-      }
-      
-      // Busca em jogos futuros
-      for (const sportKey in FALLBACK_DATA.upcomingGames) {
-        const games = FALLBACK_DATA.upcomingGames[sportKey as keyof typeof FALLBACK_DATA.upcomingGames];
-        const event = games.find((e: any) => e.id === eventId);
-        if (event) return event;
-      }
-      
-      // Se não encontrar, retorna um evento padrão
-      return {
-        id: eventId,
-        home_team: 'Time A',
-        away_team: 'Time B',
-        sport_key: 'soccer_epl',
-        sport_title: 'Premier League',
-        commence_time: '2025-05-25T19:00:00Z',
-        bookmakers: [{ 
-          key: 'betfair', 
-          markets: [{ 
-            key: 'h2h', 
-            outcomes: [
-              { name: 'Time A', price: 2.1 }, 
-              { name: 'Draw', price: 3.2 }, 
-              { name: 'Time B', price: 3.5 }
-            ] 
-          }] 
-        }]
-      };
-    }
-
-    // Busca todos os esportes
-    const sports = await getSports();
-    
-    // Para cada esporte, busca odds e verifica se o evento existe
-    for (const sport of sports) {
-      try {
-        const odds = await getOdds(sport.key);
-        const event = odds.find((e: any) => e.id === eventId);
-        
-        if (event) {
-          return {
-            ...event,
-            sport: sport.title,
-            group: sport.group
-          };
-        }
-      } catch (error) {
-        console.error(`Erro ao buscar odds para ${sport.key}:`, error);
-      }
-    }
-    
-    throw new Error(`Evento com ID ${eventId} não encontrado`);
-  } catch (error) {
-    console.error('Erro ao buscar evento por ID:', error);
-    
-    // Em caso de erro, retorna um evento padrão
-    return {
-      id: eventId,
-      home_team: 'Time A',
-      away_team: 'Time B',
-      sport_key: 'soccer_epl',
-      sport_title: 'Premier League',
-      commence_time: '2025-05-25T19:00:00Z',
-      bookmakers: [{ 
-        key: 'betfair', 
-
+      for (const sportKey
 (Content truncated due to size limit. Use line ranges to read in chunks)
