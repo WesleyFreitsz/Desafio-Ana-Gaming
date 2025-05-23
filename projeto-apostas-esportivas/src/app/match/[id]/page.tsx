@@ -1,218 +1,175 @@
-// src/app/match/[id]/page.tsx
-// Página de Detalhes da Partida
-import { Suspense } from 'react';
+
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation'; // Hook para ler query params
+// Importar o novo cliente e tipos da API
+import { MatchDetail, getOddsAPIClient } from '@/lib/api/betsapi';
 
-interface MatchPageProps {
-  params: {
-    id: string;
-  };
-}
+export default function MatchPage({ 
+  params 
+}: { 
+  params: { id: string } 
+}) {
+  const match_id = params.id;
+  const searchParams = useSearchParams();
+  const sport_key = searchParams.get('sport_key'); // Obter sport_key da URL
+  
+  const [isLoading, setIsLoading] = useState(true);
+  const [match, setMatch] = useState<MatchDetail | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchMatchDetails = async () => {
+      // Verificar se temos ID da partida e a chave do esporte
+      if (!match_id || !sport_key) {
+        setError('ID da partida ou chave do esporte não fornecidos na URL.');
+        setIsLoading(false);
+        return;
+      }
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        console.log(`[MatchPage] Fetching details for match ${match_id}, sport ${sport_key}`);
+        
+        // Usar o novo cliente da API
+        const apiClient = getOddsAPIClient();
+        const matchData = await apiClient.getMatchDetails(sport_key, match_id);
+        
+        console.log(`[MatchPage] Match details received:`, matchData);
 
-export default function MatchPage({ params }: MatchPageProps) {
-  const { id } = params;
+        if (matchData) {
+          setMatch(matchData);
+        } else {
+          setError('Detalhes da partida não encontrados.');
+          setMatch(null);
+        }
+      } catch (err) {
+        console.error('[MatchPage] Error fetching match details:', err);
+        setError('Erro ao carregar detalhes da partida. Verifique o console.');
+        setMatch(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  return (
-    <main className="container mx-auto px-4 py-8">
-      <Link href="/sports" className="text-blue-600 hover:text-blue-800 inline-block mb-6">
-        ← Voltar para Esportes
-      </Link>
+    fetchMatchDetails();
+  }, [match_id, sport_key]); // Adicionar sport_key como dependência
 
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-        <div className="bg-gradient-to-r from-blue-500 to-blue-700 p-6 text-white">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">Detalhes da Partida</h1>
-          <p className="text-blue-100">ID: {id}</p>
+  if (isLoading) {
+    return (
+      <div className="container-custom py-8">
+        <div className="bg-white rounded-lg shadow p-8 text-center">
+          <p className="text-gray-500">Carregando detalhes da partida...</p>
         </div>
-
-        <Suspense fallback={<div className="p-6">Carregando detalhes da partida...</div>}>
-          {/* Aqui serão exibidos os detalhes da partida */}
-          <div className="p-6">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-              <div className="flex flex-col items-center mb-4 md:mb-0">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-2">
-                  <span className="text-2xl font-bold">FLA</span>
-                </div>
-                <h2 className="text-xl font-semibold">Flamengo</h2>
-              </div>
-
-              <div className="flex flex-col items-center mb-4 md:mb-0">
-                <div className="text-center px-4 py-2 bg-gray-100 rounded-lg mb-2">
-                  <p className="text-sm text-gray-500">22/05/2025 - 19:00</p>
-                  <p className="text-sm text-gray-500">Campeonato Brasileiro</p>
-                </div>
-                <div className="text-3xl font-bold">
-                  2 - 1
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-2">
-                  <span className="text-2xl font-bold">PAL</span>
-                </div>
-                <h2 className="text-xl font-semibold">Palmeiras</h2>
-              </div>
-            </div>
-          </div>
-        </Suspense>
       </div>
+    );
+  }
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <section className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="bg-gray-100 px-6 py-4 border-b">
-            <h2 className="text-xl font-semibold">Odds Disponíveis</h2>
-          </div>
-          <Suspense fallback={<div className="p-6">Carregando odds...</div>}>
-            {/* Aqui serão exibidas as odds disponíveis */}
-            <div className="p-6">
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-3">Resultado Final</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Flamengo</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">2.10</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Empate</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">3.25</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Palmeiras</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">3.50</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-3">Ambas Equipes Marcam</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Sim</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">1.85</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Não</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">1.95</p>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-3">Total de Gols</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Menos de 1.5</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">3.60</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Mais de 1.5</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">1.30</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Menos de 2.5</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">2.10</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Mais de 2.5</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">1.70</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Menos de 3.5</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">1.40</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center hover:bg-blue-50 transition cursor-pointer">
-                    <p className="font-medium">Mais de 3.5</p>
-                    <p className="text-xl font-bold text-blue-600 mt-2">2.90</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Suspense>
-        </section>
-
-        <section className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="bg-gray-100 px-6 py-4 border-b">
-            <h2 className="text-xl font-semibold">Estatísticas</h2>
-          </div>
-          <Suspense fallback={<div className="p-6">Carregando estatísticas...</div>}>
-            {/* Aqui serão exibidas as estatísticas da partida */}
-            <div className="p-6">
-              <div className="space-y-6">
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">65%</span>
-                    <span className="text-sm text-gray-500">Posse de Bola</span>
-                    <span className="font-medium">35%</span>
-                  </div>
-                  <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="bg-red-500 w-[65%]"></div>
-                    <div className="bg-green-500 w-[35%]"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">15</span>
-                    <span className="text-sm text-gray-500">Finalizações</span>
-                    <span className="font-medium">8</span>
-                  </div>
-                  <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="bg-red-500 w-[65%]"></div>
-                    <div className="bg-green-500 w-[35%]"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">7</span>
-                    <span className="text-sm text-gray-500">Finalizações no Gol</span>
-                    <span className="font-medium">3</span>
-                  </div>
-                  <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="bg-red-500 w-[70%]"></div>
-                    <div className="bg-green-500 w-[30%]"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">5</span>
-                    <span className="text-sm text-gray-500">Escanteios</span>
-                    <span className="font-medium">4</span>
-                  </div>
-                  <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="bg-red-500 w-[55%]"></div>
-                    <div className="bg-green-500 w-[45%]"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">2</span>
-                    <span className="text-sm text-gray-500">Cartões Amarelos</span>
-                    <span className="font-medium">3</span>
-                  </div>
-                  <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="bg-red-500 w-[40%]"></div>
-                    <div className="bg-green-500 w-[60%]"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">0</span>
-                    <span className="text-sm text-gray-500">Cartões Vermelhos</span>
-                    <span className="font-medium">1</span>
-                  </div>
-                  <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="bg-red-500 w-[0%]"></div>
-                    <div className="bg-green-500 w-[100%]"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Suspense>
-        </section>
+  if (error || !match) {
+    return (
+      <div className="container-custom py-8">
+        <div className="bg-white rounded-lg shadow p-8 text-center">
+          <p className="text-red-500">{error || 'Partida não encontrada'}</p>
+          <Link href="/" className="mt-4 inline-block text-green-800 hover:text-green-600">
+            Voltar para a página inicial
+          </Link>
+        </div>
       </div>
-    </main>
+    );
+  }
+
+  // Renderização com dados da The Odds API (estrutura MatchDetail mapeada)
+  return (
+    <div className="container-custom py-8">
+      {/* Cabeçalho da partida */}
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="flex flex-col md:flex-row items-center justify-between">
+          <div className="flex-1 text-center md:text-left mb-4 md:mb-0">
+            <h2 className="text-2xl font-bold">{match.homeTeam}</h2>
+            <p className="text-gray-500">{match.league}</p> {/* League/Sport Title */}
+          </div>
+          
+          <div className="flex-shrink-0 text-center">
+            {/* Exibir placar se disponível */}
+            {match.status === 'Completed' || match.status === 'Live' ? (
+              <div className="text-4xl font-bold mb-1">
+                {match.score?.home ?? '?'} - {match.score?.away ?? '?'}
+              </div>
+            ) : (
+              <div className="text-3xl font-bold mb-2">VS</div>
+            )}
+            <div className="text-sm text-gray-500">{match.date} {match.time}</div>
+            <div className={`mt-2 text-xs px-3 py-1 rounded-full inline-block ${match.status === 'Completed' ? 'bg-gray-200 text-gray-700' : match.status === 'Live' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
+              {match.status} 
+            </div>
+            {match.last_update && 
+              <div className="text-xs text-gray-400 mt-1">Última att: {new Date(match.last_update).toLocaleString()}</div>
+            }
+          </div>
+          
+          <div className="flex-1 text-center md:text-right mt-4 md:mt-0">
+            <h2 className="text-2xl font-bold">{match.awayTeam}</h2>
+            <p className="text-gray-500">&nbsp;</p> {/* Placeholder for alignment */}
+          </div>
+        </div>
+      </div>
+      
+      {/* Odds da partida */}
+      <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h3 className="text-xl font-semibold">Odds (H2H)</h3>
+          <p className="text-sm text-gray-500">Casa de apostas: {match.bookmaker}</p>
+        </div>
+        
+        <div className="grid grid-cols-3 divide-x divide-gray-200">
+          <div className="p-6 text-center">
+            <p className="text-gray-500 mb-2">Casa</p>
+            <div className="text-2xl font-bold">{match.odds.home > 0 ? match.odds.home.toFixed(2) : '-'}</div>
+            <p className="text-sm mt-2">{match.homeTeam}</p>
+          </div>
+          
+          <div className="p-6 text-center">
+            <p className="text-gray-500 mb-2">Empate</p>
+            {/* Verificar se draw odds existem */}
+            <div className="text-2xl font-bold">{match.odds.draw !== null && match.odds.draw > 0 ? match.odds.draw.toFixed(2) : '-'}</div>
+            <p className="text-sm mt-2">X</p>
+          </div>
+          
+          <div className="p-6 text-center">
+            <p className="text-gray-500 mb-2">Fora</p>
+            <div className="text-2xl font-bold">{match.odds.away > 0 ? match.odds.away.toFixed(2) : '-'}</div>
+            <p className="text-sm mt-2">{match.awayTeam}</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Informações adicionais (simplificado, pois a API não fornece tudo) */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-xl font-semibold mb-4">Informações Adicionais</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="font-medium text-gray-700 mb-2">Esporte/Liga</h4>
+            <p className="text-gray-600">{match.league}</p>
+          </div>
+          
+          <div>
+            <h4 className="font-medium text-gray-700 mb-2">ID do Evento</h4>
+            <p className="text-gray-600">{match.id}</p>
+          </div>
+        </div>
+        
+        <div className="mt-6">
+          {/* Link de volta para a página do esporte */}
+          <Link href={`/sports/${match.sport_key}`} className="text-green-800 hover:text-green-600">
+            ← Voltar para {match.league}
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
+
