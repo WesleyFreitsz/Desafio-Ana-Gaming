@@ -58,10 +58,14 @@ export default function Header({ isLoggedIn = false, username = 'User123' }: Hea
             
             {user ? (
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-green-800 flex items-center justify-center text-white">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <span className="font-medium">{user.name}</span>
+                <Image
+                  src={user.avatar_url}
+                  alt={user.login}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full"
+                />
+                <span className="font-medium">{user.login}</span>
                 <button 
                   onClick={logout}
                   className="ml-2 text-sm text-gray-500 hover:text-gray-700"
@@ -140,10 +144,14 @@ export default function Header({ isLoggedIn = false, username = 'User123' }: Hea
                 {user ? (
                   <div className="flex items-center justify-between py-2">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-full bg-green-800 flex items-center justify-center text-white">
-                        {user.name.charAt(0).toUpperCase()}
-                      </div>
-                      <span className="font-medium">{user.name}</span>
+                      <Image
+                        src={user.avatar_url}
+                        alt={user.login}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <span className="font-medium">{user.login}</span>
                     </div>
                     <button 
                       onClick={logout}
