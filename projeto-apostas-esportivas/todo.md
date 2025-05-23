@@ -1,65 +1,37 @@
-# Plataforma de Visualização de Apostas Esportivas - Lista de Tarefas
+# Tarefas do Projeto SportOdds
 
-## Análise de Requisitos
-- [x] Criar estrutura inicial do projeto
-- [x] Analisar requisitos de rotas e páginas
-- [x] Analisar requisitos técnicos obrigatórios
-- [x] Analisar diferenciais técnicos
-- [x] Analisar desafio extra (autenticação OAuth)
+## Configuração e Estrutura
+- [x] Criar projeto Next.js com TypeScript, Tailwind CSS e ESLint
+- [x] Integrar arquivo globals.css
+- [x] Integrar página de esportes (/sports)
+- [x] Integrar componente LoginModal
+- [x] Integrar componente Header
+- [x] Integrar layout principal da aplicação
+- [x] Criar e integrar rota de API para próximos jogos
+- [x] Criar e integrar rota de API para busca de ligas e esportes
+- [x] Integrar arquivo betsapi.ts para comunicação com a API
+- [x] Integrar página inicial (Home/Dashboard)
+- [x] Integrar página de detalhes de esporte (/sports/[slug])
+- [x] Integrar página de detalhes de partida (/match/[id])
+- [x] Integrar autenticação via GitHub OAuth (auth-context e github-auth)
+- [x] Receber e integrar demais arquivos do projeto
 
-## Estrutura de Páginas Requeridas
-- [x] Home/Dashboard (/)
-  - [x] Destaque de categorias de esportes
-  - [x] Jogos recentes, próximos e melhores odds
-  - [x] Acesso rápido às categorias favoritas
-- [x] Página de Esportes (/sports)
-  - [x] Lista de esportes (Futebol, Basquete, Tênis...)
-  - [x] Filtro e busca por esporte
-  - [x] Navegação para ligas correspondentes
-- [x] Página de Ligas (/sports/<sport>)
-  - [x] Lista de ligas do esporte selecionado
-  - [x] Jogos recentes e futuros por liga
-  - [x] Links para detalhes de cada partida
-- [x] Página de Detalhes da Partida (/match/<id>)
-  - [x] Informações dos times/atletas, data e hora
-  - [x] Todas as odds disponíveis
-  - [x] Estatísticas adicionais (se disponíveis na API)
+## Análise e Planejamento
+- [x] Analisar estrutura completa do código recebido
+- [x] Verificar integração com a API BetsAPI
+- [ ] Confirmar requisitos e objetivos com o usuário
+- [ ] Planejar próximas etapas de desenvolvimento
 
-## Requisitos Técnicos Obrigatórios
-- [x] Utilizar ReactJS ou Next.js (Next.js 14 com App Router)
-- [x] Implementar Hooks do React (useState, useMemo, useRef, useEffect, useContext, useCallback)
-- [x] Implementar gerenciamento de estado (Context API ou biblioteca adicional)
-- [x] Consumir dados externos via API Fetch
-- [x] Aplicar boas práticas de componentização (Client e Server Components)
+## Desenvolvimento
+- [ ] Implementar/completar rota de detalhes de ligas (/sports/<liga>)
+- [ ] Implementar/completar rota de detalhes de partidas (/match/<partida>)
+- [ ] Implementar autenticação via OAuth do GitHub
+- [ ] Implementar filtros e busca de esportes/ligas
+- [ ] Aprimorar componentes existentes conforme necessário
 
-## Diferenciais Técnicos
-- [x] Implementar TypeScript para tipagem estática
-- [x] Aplicar estilização com Tailwind CSS ou Styled Components (Tailwind CSS)
-- [x] Desenvolver testes automatizados para componentes principais
-- [x] Configurar ESLint e Prettier para padronização de código
-- [x] Otimizar SEO para melhorar indexação e desempenho
-
-## Desafio Extra
-- [x] Implementar autenticação via OAuth do GitHub
-- [x] Adicionar middleware para controle de acesso de usuários autenticados
-
-## Pesquisa e Integração de APIs
-- [x] Pesquisar APIs sugeridas (sportsbookapi.com, rapidapi.com, the-odds-api.com)
-- [x] Selecionar API mais adequada para o projeto (The Odds API)
-- [x] Testar endpoints e validar resposta da API
-- [x] Documentar estrutura de dados da API selecionada
-
-## Referências de Interface
-- [x] Analisar interfaces sugeridas:
-  - [x] oddsscanner.com/br/
-  - [x] oddspedia.com/br/odds
-  - [x] oddsview.com/odds
-- [x] Identificar padrões de design e UX para implementação
-
-## Validação Final
-- [x] Testar responsividade em dispositivos móveis
-- [x] Validar fluxo de autenticação
-- [x] Verificar integração com API
-- [x] Executar testes automatizados
-- [x] Validar acessibilidade
-- [x] Preparar documentação para entrega
+## Validação e Entrega
+- [ ] Testar funcionamento de todas as rotas
+- [ ] Validar integração com a API
+- [ ] Verificar responsividade e experiência do usuário
+- [ ] Preparar para deploy na Vercel
+- [ ] Entregar código final ao usuário

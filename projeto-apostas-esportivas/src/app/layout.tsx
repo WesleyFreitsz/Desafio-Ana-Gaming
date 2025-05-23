@@ -1,16 +1,17 @@
-// src/app/layout.tsx
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import { Providers } from './providers';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import Header from "@/components/Header";
+import { AuthProvider } from "@/lib/auth/auth-context";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
-  title: 'BetView - Plataforma de Visualização de Apostas Esportivas',
-  description: 'Visualize odds e apostas esportivas em tempo real para diversos esportes e ligas.',
+  title: "SportOdds - Comparação de Odds Esportivas",
+  description: "Compare as melhores odds de apostas esportivas em um só lugar",
 };
 
 export default function RootLayout({
@@ -20,14 +21,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50`}>
-        <Providers>
+      <body className={`${inter.variable} font-sans antialiased bg-gray-50`}>
+        <AuthProvider>
           <Header />
-          <div className="flex-grow">
+          <main className="min-h-screen pt-4">
             {children}
-          </div>
-          <Footer />
-        </Providers>
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
