@@ -348,7 +348,7 @@ export class OddsAPIClient {
           status = 'Live'; 
       }
 
-      let mappedOdds = { home: 0, draw: null, away: 0 };
+      const mappedOdds = { home: 0, draw: null, away: 0 };
       let bookmaker = 'N/A';
 
       // Usa as odds do evento de odds se disponível (mais atualizado?)
@@ -440,3 +440,14 @@ export function getOddsAPIClient(): OddsAPIClient {
   return oddsApiClientInstance;
 }
 
+
+
+
+// Factory function to get an instance of the API client
+export const getBetsAPI = (): OddsAPIClient => {
+  const apiKey = process.env.THE_ODDS_API_KEY; // Assuming the key is in this env var
+  if (!apiKey) {
+    throw new Error("THE_ODDS_API_KEY environment variable is not set.");
+  }
+  return new OddsAPIClient(apiKey);
+};
